@@ -9,3 +9,4 @@ env/
 prove-ai/
 traine.py
 valid.py
+patchnet_model.pth
