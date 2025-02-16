@@ -9,6 +9,7 @@ from PIL import Image
 import pandas as pd
 from utils.utils import read_cfg
 from Dataset.Dataset import SkinCancerDataset
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from models.patchnet import PatchNet
 
 cfg = read_cfg(cfg_file='D:\\skin\\config\\config.yaml')
@@ -22,7 +23,7 @@ transform = transforms.Compose([
                          std=[0.229, 0.224, 0.225])
 ])
 
-def train_model(model, train_loader, val_loader, criterion, optimizer, device, num_epochs=20, patience=5, save_path=cfg['output_dir']):
+def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, device, num_epochs=20, patience=5, save_path=cfg['output_dir']):
     model.to(device)
     
     for epoch in range(num_epochs):
@@ -68,6 +69,9 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
         val_loss /= total
         val_acc = correct / total
 
+        # Step the scheduler based on validation loss
+        scheduler.step(val_loss)
+
         print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f} | Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
     
     # Save the trained model
@@ -89,10 +93,11 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = PatchNet(patch_size=56, num_classes=7)
     
-    criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-4)
+    criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=5e-4)
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.3)
 
-    train_model(model, train_loader, val_loader, criterion, optimizer, device, num_epochs=20, patience=5, save_path=cfg['output_dir'])
+    train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, device, num_epochs=20, patience=5, save_path=cfg['output_dir'])
 
 
 if __name__ == '__main__':
