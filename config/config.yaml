@@ -1,0 +1,6 @@
+train_set : 'D:\skin\balanced_train.csv'
+test_set : 'D:\skin\test.csv'
+
+output_dir : 'D:\skin\patchnet_model.pth'
+img_dir : 'D:\skin\HAM10000_images_part_1'
+output_dir_aug : 'D:\skin\augmented'

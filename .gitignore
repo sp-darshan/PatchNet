@@ -1,0 +1,11 @@
+HAM10000_balanced/
+HAM10000_balanced_1.zip
+HAM10000_balanced_1/
+HAM10000_balanced_dataset.csv
+HAM10000_balanced_dataset_1.csv
+HAM10000_images_part_1/
+HAM10000_metadata.csv
+env/
+prove-ai/
+traine.py
+valid.py
