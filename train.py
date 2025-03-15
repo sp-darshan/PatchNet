@@ -80,11 +80,12 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
 
 def main():
     csv_file = cfg['train_set']
+    val_file = cfg['val_set']
     img_dir = cfg['img_dir']
 
-    dataset = SkinCancerDataset(csv_file=csv_file, img_dir=img_dir, transform=transform)
+    train_dataset = SkinCancerDataset(csv_file=csv_file, img_dir=img_dir, transform=transform)
+    val_dataset = SkinCancerDataset(csv_file=val_file, img_dir=img_dir, transform=transform)
     
-    train_dataset, val_dataset = train_test_split(dataset, test_size=0.2, random_state=42)
     train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=4)
     val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=4)
 
@@ -97,7 +98,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=5e-4)
     scheduler = ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.3)
 
-    train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, device, num_epochs=20, patience=5, save_path=cfg['output_dir'])
+    train_model(model, train_loader, val_loader, criterion, optimizer, scheduler, device, num_epochs=15, patience=5, save_path=cfg['output_dir'])
 
 
 if __name__ == '__main__':
