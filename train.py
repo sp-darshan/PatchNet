@@ -116,11 +116,11 @@ def main():
     train_dataset = SkinCancerDataset(csv_file=csv_file, img_dir=img_dir, transform=transform)
     val_dataset = SkinCancerDataset(csv_file=val_file, img_dir=img_dir, transform=transform)
     
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=4)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = PatchNet(patch_size=56, num_classes=7)
+    model = PatchNet(patch_size=32, num_classes=7)
     
     criterion = nn.CrossEntropyLoss(weight=weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=5e-4)
