@@ -50,7 +50,7 @@ def evaluate_model(model, dataloader, device, criterion):
     print(f"Test Accuracy: {accuracy:.4f}, Test Loss: {avg_loss:.4f}")
     
     print("\nClassification Report:")
-    print(classification_report(all_labels, all_preds, digits=4))
+    print(classification_report(all_labels, all_preds, digits=4, zero_division=1))
     
     # Compute confusion matrix
     cm = confusion_matrix(all_labels, all_preds)
